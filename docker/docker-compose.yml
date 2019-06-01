@@ -1,0 +1,10 @@
+book-order-db:
+    container_name: mysql-db
+    image: mysql:5.7.26
+    ports:
+          - "3306:3306"
+    environment:
+          - MYSQL_ROOT_PASSWORD=book@dm1n
+          - MYSQL_DATABASE=bkorder
+          - MYSQL_USER=book_usr
+          - MYSQL_PASSWORD=book@dm1n
