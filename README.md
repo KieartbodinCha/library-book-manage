@@ -11,3 +11,10 @@
   
 4. Build up the database
   $ docker-compose up -d
+  
+5. Using sql/schema.sql to create schema 
+    with 
+    
+    url=jdbc:mysql://192.168.99.100:3306/bkorder?useUnicode=true&characterEncoding=utf8&noAccessToProcedureBodies=true
+    username=root
+    password=book@dm1n

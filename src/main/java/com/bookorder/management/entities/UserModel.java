@@ -34,7 +34,7 @@ public class UserModel implements Serializable {
     @Column(name = "birth_date")
     private Date bithdate;
 
-    @Column(name = "session_id")
-    private String sessionId;
+    @Column(name = "role_name")
+    private String roleName;
 
 }

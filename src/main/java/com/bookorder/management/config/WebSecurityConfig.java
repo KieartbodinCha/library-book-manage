@@ -1,27 +1,56 @@
 package com.bookorder.management.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.configuration.ClientDetailsServiceConfiguration;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
+@Import({ClientDetailsServiceConfiguration.class})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder authManager) throws Exception {
-        // This is the code you usually have to configure your authentication manager.
-        // This configuration will be used by authenticationManagerBean() below.
+        authManager.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        // ALTHOUGH THIS SEEMS LIKE USELESS CODE,
-        // IT'S REQUIRED TO PREVENT SPRING BOOT AUTO-CONFIGURATION
-        return super.authenticationManagerBean();
+
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http
+
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/login", "/books").permitAll()
+                .antMatchers(HttpMethod.POST, "/users").permitAll()
+//                .anyRequest().authenticated()
+//                .antMatchers("/secure/**").authenticated()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
+
+
     }
+
 }
